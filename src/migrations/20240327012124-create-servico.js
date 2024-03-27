@@ -2,32 +2,26 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Usuarios', {
+    await queryInterface.createTable('servicos', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      nome: {
+      possui_nome_negocio: {
+        type: Sequelize.BOOLEAN
+      },
+      nome_negocio: {
         type: Sequelize.STRING
       },
-      contato_pessoal_01: {
-        type: Sequelize.STRING
-      },
-      contato_pessoal_02: {
-        type: Sequelize.STRING
-      },
-      contato_negocio_01: {
-        type: Sequelize.STRING
-      },
-      contato_negocio_02: {
-        type: Sequelize.STRING
-      },
-      tempo_reside: {
+      tempo_negocio: {
         type: Sequelize.INTEGER
       },
-      socio_sat: {
+      descricao_servico: {
+        type: Sequelize.STRING
+      },
+      status:{
         type: Sequelize.BOOLEAN
       },
       createdAt: {
@@ -41,6 +35,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Usuarios');
+    await queryInterface.dropTable('servicos');
   }
 };

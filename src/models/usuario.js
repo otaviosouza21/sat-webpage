@@ -4,13 +4,13 @@ const {
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Usuario extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
     static associate(models) {
-      // define association here
+      Usuario.belongsTo(models.Rule, {
+        foreignKey: 'rule_id',
+      });
+      Usuario.hasMany(models.Servico,{
+        foreignkey:'servico_id',
+      });
     }
   }
   Usuario.init({
@@ -20,11 +20,12 @@ module.exports = (sequelize, DataTypes) => {
     contato_negocio_01: DataTypes.STRING,
     contato_negocio_02: DataTypes.STRING,
     tempo_reside: DataTypes.INTEGER,
-    socio_sat: DataTypes.BOOLEAN
+    socio_sat: DataTypes.BOOLEAN,
+    status: DataTypes.BOOLEAN
   }, {
     sequelize,
     modelName: 'Usuario',
-    tableName:'usuarios'
+    tableName: 'usuarios'
   });
   return Usuario;
 };
