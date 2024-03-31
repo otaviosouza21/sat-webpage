@@ -2,18 +2,22 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Rules', {
+    await queryInterface.createTable('avaliacao_servicos', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      nome: {
+      avaliacao: {
+        type: Sequelize.DOUBLE
+      },
+      comentario: {
         type: Sequelize.STRING
       },
-      status: {
-        type: Sequelize.BOOLEAN
+      servico_id:{
+      type: Sequelize.INTEGER,
+        references:{model:'servicos', key:'id'}
       },
       createdAt: {
         allowNull: false,
@@ -26,6 +30,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('rules');
+    await queryInterface.dropTable('avaliacao_servicos');
   }
 };

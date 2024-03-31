@@ -6,8 +6,8 @@ module.exports = (sequelize, DataTypes) => {
   class Avaliacao_Servico extends Model {
 
     static associate(models) {
-      Avaliacao_Servico.hasMany(models.Servico, {
-        foreignKey: 'avaliacao_id',
+      Avaliacao_Servico.belongsTo(models.Servico,{
+        foreignKey: 'servico_id',
       });
     }
   }
@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Avaliacao_Servico',
-    tableName: 'avaliacao_servicos'
+    tableName: 'avaliacao_servicos',
   });
   return Avaliacao_Servico;
 };

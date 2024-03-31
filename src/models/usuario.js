@@ -5,11 +5,11 @@ const {
 module.exports = (sequelize, DataTypes) => {
   class Usuario extends Model {
     static associate(models) {
-      Usuario.belongsTo(models.Rule, {
+      Usuario.belongsTo(models.Rule, { //pertence a
         foreignKey: 'rule_id',
       });
-      Usuario.hasMany(models.Servico,{
-        foreignkey:'servico_id',
+      Usuario.hasMany(models.Servico,{ //tem muitos
+        foreignkey:'usuario_id',
       });
     }
   }
@@ -25,7 +25,8 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Usuario',
-    tableName: 'usuarios'
+    tableName: 'usuarios',
+
   });
   return Usuario;
 };

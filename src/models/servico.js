@@ -6,19 +6,22 @@ module.exports = (sequelize, DataTypes) => {
   class Servico extends Model {
 
     static associate(models) {
-      Servico.belongsTo(models.Categoria_Servico, {
+      Servico.belongsTo(models.Categoria_Servico, {//pertence a uma categoria
         foreignKey: 'categoria_id',
+        targetKey:'id'
       });
-      Servico.belongsTo(models.Avaliacao_Servico, {
-        foreignKey: 'avaliacao_id',
-      });
-      Servico.belongsTo(models.Usuario, {
-        foreignKey: 'servico_id',
+      Servico.hasMany(models.Avaliacao_Servico, {//tem varias
+        foreignKey:'servico_id',
+        targetKey: 'servico_id'
+      })
+      Servico.belongsTo(models.Usuario, {//pertence a um usuario
+        foreignKey: 'usuario_id',
+        targetKey:'id',
       });
     }
   }
   Servico.init({
-    possui_nome_negocio: DataTypes.BOOLEAN,
+    possui_nome_negocio:DataTypes.BOOLEAN,
     nome_negocio: DataTypes.STRING,
     tempo_negocio: DataTypes.INTEGER,
     descricao_servico: DataTypes.STRING,
@@ -26,7 +29,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: 'Servico',
-    tableName:'servicos'
+    tableName:'servicos',
   });
   return Servico;
 };
