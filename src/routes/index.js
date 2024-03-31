@@ -4,6 +4,7 @@ const rule = require('./ruleRoutes.js')
 const usuario = require('./usuarioRoutes.js')
 const categoria_servico = require('./categoria_servicoRoutes.js')
 const servico = require('./servicoRoutes.js')
+const avaliacao = require('./avaliacao_servicoRoutes.js')
 
 module.exports = (app)=>{
     app.use(cors());
@@ -12,4 +13,5 @@ module.exports = (app)=>{
     app.use(usuario);
     app.use(categoria_servico);
     app.use(servico);
+    app.use(avaliacao);
 }
