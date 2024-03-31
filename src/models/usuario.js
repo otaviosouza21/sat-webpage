@@ -8,8 +8,8 @@ module.exports = (sequelize, DataTypes) => {
       Usuario.belongsTo(models.Rule, { //pertence a
         foreignKey: 'rule_id',
       });
-      Usuario.hasMany(models.Servico,{ //tem muitos
-        foreignkey:'usuario_id',
+      Usuario.hasMany(models.Servico, { //tem muitos
+        foreignKey:'usuario_id',
       });
     }
   }
