@@ -18,6 +18,21 @@ class Services{
         return model[this.nomeModel].findByPk(id);
     }
 
+    async pegaRegistroPorDado(dado){
+        const retorno = await model[this.nomeModel].findOne({where: {email: dado}})
+        if(retorno === null){
+            console.log('registro não encontrado na base de dados');
+            const resposta = retorno
+            return {status:false, retorno: retorno};
+        }else{
+            //dado
+            console.log('registro foi encontrado na base de dados');
+            return {status:true, retorno: retorno};
+
+        }
+
+    }
+
     //-----------UPDATE--------------//
     async atualizaDado(dadosAtualizados, id){
         const ListaDeRegistrosAtualizado = await model[this.nomeModel].update(dadosAtualizados,{where:{id:id}});

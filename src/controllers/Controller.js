@@ -5,7 +5,7 @@ class Controller {
     this.camposVazios = [];
   }
 
-  async allowNull(req, res) {
+   async allowNull(req, res) {
     this.camposVazios = [] //serve para nao acumular valores duplicados na array
     const todosCamposTrue = this.camposObrigatorios.every((campo) => {
       if (req.body[campo] == null) {
@@ -34,6 +34,7 @@ class Controller {
         return res.status(500).json({
           message: 'Preencha todos os campos necessarios',
           campos: isTrue.campos,
+          error: true,
         });
       }
     } catch (e) {
