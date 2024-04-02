@@ -8,12 +8,14 @@ class Controller {
    async allowNull(req, res) {
     this.camposVazios = [] //serve para nao acumular valores duplicados na array
     const todosCamposTrue = this.camposObrigatorios.every((campo) => {
+
       if (req.body[campo] == null) {
         this.camposVazios.push(campo)
       }
+      
       return req.body[campo];
     });
-    console.log(this.camposVazios);
+    
     if (todosCamposTrue){
       return { status: true };
     } 
