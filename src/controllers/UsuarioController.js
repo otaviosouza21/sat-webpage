@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 const usuarioServices = new UsuarioServices();
-const camposObrigatorios = ['nome','email','senha','contato_pessoal_01','tempo_reside','socio_sat','rule_id']
+const camposObrigatorios = ['nome','email','senha','contato_pessoal_01','tempo_reside','rule_id','socio_sat',"status"]
 
 class UsuarioController extends Controller {
   constructor() {
@@ -17,22 +17,23 @@ class UsuarioController extends Controller {
     const {email} = req.body;
     const bodyReq = req.body;
 
-    //checar se o usuario existe
-    const userExist = await this.propsServices.pegaRegistroPorDado(email)
-    if(userExist.status){
-      return res.status(422).json({
-        message:"por favor, utilize outro e-mail!",
-        error:true
-      });
-    }
-    //gerando senha cripto
-    const salt = await bcrypt.genSalt(12);
-    const senhaHash = await bcrypt.hash(bodyReq.senha, salt);
-    bodyReq.senha = senhaHash;
-    //criando usuario
+    //valida campos obrigatorios
     try{
       const isTrue = await this.allowNull(req, res);
       if(isTrue.status){
+        //checar se o usuario existe
+        const userExist = await this.propsServices.pegaRegistroPorDado(email)
+        if(userExist.status){
+          return res.status(422).json({
+            message:"por favor, utilize outro e-mail!",
+            error:true
+          });
+        }
+        //gerando senha cripto
+        const salt = await bcrypt.genSalt(12);
+        const senhaHash = await bcrypt.hash(bodyReq.senha, salt);
+        bodyReq.senha = senhaHash;
+        //criando usuario
         const createUser = await model.Usuario.create(bodyReq);
         return res.status(200).json({ message: `usuario cadastrado com sucesso`,error:false });
       }else{
@@ -68,7 +69,6 @@ class UsuarioController extends Controller {
     //checar se a senha cripto confere
     const senhaDB = userExist.retorno.dataValues.senha;
     const checkSenha = await bcrypt.compare(senha, senhaDB)
-    console.log(checkSenha);
     if(!checkSenha){
       return res.status(404).json({message:"Senha Invalida!"});
     }
