@@ -75,20 +75,34 @@ class UsuarioController extends Controller {
 
     try{
       const secret = process.env.SECRET;
-
+      console.log(secret);
       const token = jwt.sign({
         email: userExist.retorno.dataValues.email
-      },
-      secret,
-      )
+      },secret)
       res.status(200).json({message:"Autentiação realizada com sucesso",token})
       
     }catch(e){
+      console.log(e);
       return res.status(500).json({ message: `erro ao logar, mensagem do erro:${e}` });
     }
   }
 
+  //private route
+  async privateRouteUsrController(req, res){
+    const id = req.params.id;
+
+    //check se usuario existe
+    const user = await model.Usuario.findByPk(id)
+
+    if(!user){
+      return res.status(404).json({message:"usuario nao encontrado", error: true})
+    }
+
+    return res.status(200).json({usr:user.dataValues, error: false})
+
   }
+}
+
 
 
 module.exports = UsuarioController;
