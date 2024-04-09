@@ -27,6 +27,23 @@ class ServicoController extends Controller {
     }
   }
 
+  async InnerJoinPegaServicoUsuarioPorId(req,res){
+    try {
+      const {id} = req.params
+      const listaRegistros = await model.Servico.findByPk(id,{
+        include:[{model: model.Usuario}]
+      });
+      if(listaRegistros === null){
+        return res.status(500).json({ message: `o registro ${id} não foi encontrado`,error:true});
+      }else{
+        return res.status(200).json(listaRegistros)
+      }
+      } catch (e) {
+        console.log(e);
+        return res.status(500).json({ message: `erro ao buscar registro, mensagem do erro: ${e}` });
+  }
+  }
+
   async InnerJoinPegaServicoCategoria(req,res){
     try {
       const listaRegistros = await model.Servico.findAll({
@@ -39,6 +56,23 @@ class ServicoController extends Controller {
       console.log(e);
       return res.status(500).json({ message: `erro ao buscar registro, mensagem do erro: ${e}` });
     }
+  }
+
+  async InnerJoinPegaServicoCategoriaPorId(req,res){
+    try {
+      const {id} = req.params
+      const listaRegistros = await model.Servico.findByPk(id,{
+        include:[{model: model.Categoria_Servico}]
+      });
+      if(listaRegistros === null){
+        return res.status(500).json({ message: `o registro ${id} não foi encontrado`,error:true});
+      }else{
+        return res.status(200).json(listaRegistros)
+      }
+      } catch (e) {
+        console.log(e);
+        return res.status(500).json({ message: `erro ao buscar registro, mensagem do erro: ${e}` });
+  }
   }
 }
 
