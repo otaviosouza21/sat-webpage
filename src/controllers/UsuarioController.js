@@ -78,7 +78,7 @@ class UsuarioController extends Controller {
       console.log(secret);
       console.log(userExist.retorno.dataValues.rule_id);
       const token = jwt.sign({
-        email: userExist.retorno.dataValues.email,
+        id: userExist.retorno.dataValues.id,
         rule: userExist.retorno.dataValues.rule_id
       },secret)
       res.status(200).json({message:"Autentiação realizada com sucesso",token})
