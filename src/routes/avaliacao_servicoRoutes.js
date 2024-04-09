@@ -8,6 +8,7 @@ const route = Router();
 
 route.post('/avaliacao_servico', (req, res) => {avaliacao_servicoController.criaRegistroController(req, res)});
 route.get('/avaliacao_servico', (req, res) => {avaliacao_servicoController.pegaTodosController(req, res)});
+route.get('/avaliacao_servico/servico', (req, res) => {avaliacao_servicoController.InnerJoinPegaAvaliaServico(req, res)});
 route.get('/avaliacao_servico/:id', (req, res) => avaliacao_servicoController.pegaUmRegistroPorIdController(req, res));
 route.put('/avaliacao_servico/:id', (req, res) => avaliacao_servicoController.atulizaDadoController(req, res));
 route.delete('/avaliacao_servico/:id', (req, res) => avaliacao_servicoController.excluiRegistroController(req, res));
