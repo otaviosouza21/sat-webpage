@@ -30,9 +30,11 @@ class ServicoController extends Controller {
   async InnerJoinPegaServicoUsuarioPorId(req,res){
     try {
       const {id} = req.params
-      const listaRegistros = await model.Servico.findByPk(id,{
-        include:[{model: model.Usuario}]
+      const listaRegistros = await model.Usuario.findByPk(id,{
+        include:[{model: model.Servico}]
+        
       });
+
       if(listaRegistros === null){
         return res.status(500).json({ message: `o registro ${id} não foi encontrado`,error:true});
       }else{
