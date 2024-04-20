@@ -75,8 +75,6 @@ class UsuarioController extends Controller {
 
     try{
       const secret = process.env.SECRET;
-      console.log(secret);
-      console.log(userExist.retorno.dataValues.rule_id);
       const token = jwt.sign({
         id: userExist.retorno.dataValues.id,
         rule: userExist.retorno.dataValues.rule_id
