@@ -28,7 +28,7 @@ class PasswordController extends Controller {
       const token = jwt.sign({ id: userExist.retorno.id }, secret, {
         expiresIn: "1h",
       });
-      const resetLink = `http://localhost:5173/reset-password?token=${token}`;
+      const resetLink = `http://54.232.149.20:80/reset-password?token=${token}`;
 
       //gerando link de recuperação
       const options = {
