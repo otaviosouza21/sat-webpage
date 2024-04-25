@@ -5,6 +5,6 @@ const emailController = new EmailController();
 
 const route = Router();
 
-route.post('/send-email', (req, res) => {emailController.sendEmail(req, res)});
+route.post('/api/send-email', (req, res) => {emailController.sendEmail(req, res)});
 
 module.exports = route;
