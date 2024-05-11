@@ -11,16 +11,84 @@ class ServicoController extends Controller {
     super(servicoServices,camposObrigatorios);
   }
  
-  async InnerJoinPegaServicoUsuario(req,res){
+  async InnerJoinPegaServicoAtivoUsuario(req,res){
     try {
-      const listaRegistros = await model.Servico.findAll({
-        include: [{
-          model: model.Usuario,
-          attributes:['id','nome','email','contato_pessoal_01','contato_pessoal_02','contato_negocio_01','contato_negocio_02','socio_sat','createdAt','updatedAt','rule_id']
-        }],
-      });
-      console.log(await listaRegistros);
-      return res.status(200).json(listaRegistros)
+      //PAGINACAO
+      const { page = 1 } = req.query;
+      //limite de registros em cada pagina
+      const limit = 7;
+      var lastPage = 1;
+
+      //consultando quantidade de pedidos encontrados por codcli
+      const countServicos = await model.Servico.count({where:{status:true}});
+
+      if(countServicos !== 0){
+        lastPage = Math.ceil(countServicos / limit)
+        
+        //Criando objeto com as informações de paginacao
+        var paginacao ={
+          //caminho
+          path: '/api/servico/usuario',
+          total_Servicos: countServicos,
+          limit_por_page: limit,
+          current_page: page,
+          total_Pages: lastPage,
+          prev_page_url: page - 1 >= 1 ? page -1: false,
+          next_page_url: Number(page) + Number(1) > lastPage ? false : Number(page) + 1,
+        }
+
+        const ItenStarted = (page * limit) - limit
+
+        const servicos = await servicoServices.pegaServicosAtivos(ItenStarted,limit)
+
+        if(servicos.retorno.length === 0){
+          return res.status(400).json({message:`não foi possivel encontrar o registro`});
+        }else{
+          return res.status(200).json({servicos:servicos,paginacao});
+        }
+      }
+    } catch (e) {
+      console.log(e);
+      return res.status(500).json({ message: `erro ao buscar registro, mensagem do erro: ${e}` });
+    }
+  }
+
+  async InnerJoinPegaTodosServicoUsuario(req,res){
+    try {
+      //PAGINACAO
+      const { page = 1 } = req.query;
+      //limite de registros em cada pagina
+      const limit = 7;
+      var lastPage = 1;
+
+      //consultando quantidade de pedidos encontrados por codcli
+      const countServicos = await model.Servico.count();
+
+      if(countServicos !== 0){
+        lastPage = Math.ceil(countServicos / limit)
+        
+        //Criando objeto com as informações de paginacao
+        var paginacao ={
+          //caminho
+          path: '/api/servico/usuario',
+          total_Servicos: countServicos,
+          limit_por_page: limit,
+          current_page: page,
+          total_Pages: lastPage,
+          prev_page_url: page - 1 >= 1 ? page -1: false,
+          next_page_url: Number(page) + Number(1) > lastPage ? false : Number(page) + 1,
+        }
+
+        const ItenStarted = (page * limit) - limit
+
+        const servicos = await servicoServices.pegaServicos(ItenStarted,limit)
+
+        if(servicos.retorno.length === 0){
+          return res.status(400).json({message:`não foi possivel encontrar o registro`});
+        }else{
+          return res.status(200).json({servicos:servicos,paginacao});
+        }
+      }
     } catch (e) {
       console.log(e);
       return res.status(500).json({ message: `erro ao buscar registro, mensagem do erro: ${e}` });
