@@ -1,5 +1,7 @@
 const Services = require('./Services.js');
 const model = require('../models/index.js')
+const { Op } = require('sequelize');
+
 class ServicoServices extends Services {
   constructor() {
     super('Servico');
@@ -7,11 +9,11 @@ class ServicoServices extends Services {
 
 
   
-  async pegaServicosAtivos(ItenStarted,limit) {
+  async pegaServicosAtivos(ItenStarted,limit,nome_negocio) {
 
 
     const listaServicos = await model.Servico.findAll({
-      where:{status:true},
+      where:{status:true,nome_negocio:{[Op.like]:`%${nome_negocio}%`}},
       include: [{
         model: model.Usuario,
         attributes:['id','nome','email','contato_pessoal_01','contato_pessoal_02','contato_negocio_01','contato_negocio_02','socio_sat','createdAt','updatedAt','rule_id'],

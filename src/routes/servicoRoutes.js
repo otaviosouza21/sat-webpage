@@ -8,9 +8,9 @@ const route = Router();
 
 route.post('/api/servico', (req, res) => {servicoController.criaRegistroController(req, res)});
 
-route.get('/api/servico/usuario', (req, res) => {servicoController.InnerJoinPegaServicoAtivoUsuario(req, res)});
+route.get('/api/servico/usuario', (req, res) => {servicoController.InnerJoinPegaServicoAtivoUsuarioWhere(req, res)});
 route.get('/api/servico/', (req, res) => {servicoController.InnerJoinPegaTodosServicoUsuario(req, res)});
-route.get('/api/servico/usuario/:id', (req, res) => {servicoController.InnerJoinPegaServicoUsuarioPorId(req, res)});
+route.get('/api/servico/usuario/id/:id', (req, res) => {servicoController.InnerJoinPegaServicoUsuarioPorId(req, res)});
 route.get('/api/servico/categoria', (req, res) => {servicoController.InnerJoinPegaServicoCategoria(req, res)});
 route.get('/api/servico/categoria/:id', (req, res) => {servicoController.InnerJoinPegaServicoCategoriaPorId(req, res)});
 route.get('/api/servico/:id', (req, res) => servicoController.pegaUmRegistroPorIdController(req, res));
@@ -18,3 +18,4 @@ route.put('/api/servico/:id', (req, res) => servicoController.atulizaDadoControl
 route.delete('/api/servico/:id', (req, res) => servicoController.excluiRegistroController(req, res));
 
 module.exports = route;
+
