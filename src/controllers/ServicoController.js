@@ -1,6 +1,7 @@
 const Controller = require('./Controller.js');
 const ServicoServices = require('../services/ServicoServices.js');
 const model = require('../models');
+const { Op } = require('sequelize');
 
 
 const servicoServices = new ServicoServices();
@@ -11,16 +12,20 @@ class ServicoController extends Controller {
     super(servicoServices,camposObrigatorios);
   }
  
-  async InnerJoinPegaServicoAtivoUsuario(req,res){
+
+  async InnerJoinPegaServicoAtivoUsuarioWhere(req,res){
     try {
       //PAGINACAO
-      const { page = 1 } = req.query;
+      const { page = 1, nome_negocio = '' } = req.query;
+    
       //limite de registros em cada pagina
       const limit = 7;
       var lastPage = 1;
 
       //consultando quantidade de pedidos encontrados por codcli
-      const countServicos = await model.Servico.count({where:{status:true}});
+      const countServicos = await model.Servico.count({where:{status:true,nome_negocio:{[Op.like]:`%${nome_negocio}%`}}});
+
+      if (countServicos === 0) return res.status(400).json({message:`não foi possivel encontrar o registro`});
 
       if(countServicos !== 0){
         lastPage = Math.ceil(countServicos / limit)
@@ -28,7 +33,7 @@ class ServicoController extends Controller {
         //Criando objeto com as informações de paginacao
         var paginacao ={
           //caminho
-          path: '/api/servico/usuario',
+          path: '/api/servico/usuario/?page=1&nome_negocio=nome',
           total_Servicos: countServicos,
           limit_por_page: limit,
           current_page: page,
@@ -39,7 +44,7 @@ class ServicoController extends Controller {
 
         const ItenStarted = (page * limit) - limit
 
-        const servicos = await servicoServices.pegaServicosAtivos(ItenStarted,limit)
+        const servicos = await servicoServices.pegaServicosAtivos(ItenStarted,limit,nome_negocio)
 
         if(servicos.retorno.length === 0){
           return res.status(400).json({message:`não foi possivel encontrar o registro`});
@@ -52,6 +57,7 @@ class ServicoController extends Controller {
       return res.status(500).json({ message: `erro ao buscar registro, mensagem do erro: ${e}` });
     }
   }
+
 
   async InnerJoinPegaTodosServicoUsuario(req,res){
     try {
