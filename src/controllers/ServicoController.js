@@ -17,7 +17,6 @@ class ServicoController extends Controller {
     try {
       //PAGINACAO
       const { page = 1, nome_negocio = '' } = req.query;
-
     
       //limite de registros em cada pagina
       const limit = 7;
@@ -34,7 +33,7 @@ class ServicoController extends Controller {
         //Criando objeto com as informações de paginacao
         var paginacao ={
           //caminho
-          path: '/api/servico/usuario/nome/:nome_negocio',
+          path: '/api/servico/usuario/?page=1&nome_negocio=nome',
           total_Servicos: countServicos,
           limit_por_page: limit,
           current_page: page,

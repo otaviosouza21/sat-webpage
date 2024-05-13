@@ -13,7 +13,9 @@ class ServicoServices extends Services {
 
 
     const listaServicos = await model.Servico.findAll({
-      where:{status:true,nome_negocio:{[Op.like]:`%${nome_negocio}%`}},
+      where:{
+        status:true,
+        nome_negocio:{[Op.like]:`%${nome_negocio}%`}},
       include: [{
         model: model.Usuario,
         attributes:['id','nome','email','contato_pessoal_01','contato_pessoal_02','contato_negocio_01','contato_negocio_02','socio_sat','createdAt','updatedAt','rule_id'],
@@ -22,9 +24,6 @@ class ServicoServices extends Services {
         limit:Number(limit),
         order:[['id','DESC']],
     });
-
-    // Array para armazenar os números dos pedidos Encontrados
-    //const ServicosEncontrados = listaServicos.map(servicos => servicos.id);
 
     if (listaServicos) {
         console.log('Nenhum registro encontrado na base de dados.');
@@ -35,9 +34,8 @@ class ServicoServices extends Services {
     }
 }
 
+
 async pegaServicos(ItenStarted,limit) {
-
-
   const listaServicos = await model.Servico.findAll({
     include: [{
       model: model.Usuario,
@@ -48,8 +46,6 @@ async pegaServicos(ItenStarted,limit) {
       order:[['id','DESC']],
   });
 
-  // Array para armazenar os números dos pedidos Encontrados
-  //const ServicosEncontrados = listaServicos.map(servicos => servicos.id);
 
   if (listaServicos) {
       console.log('Nenhum registro encontrado na base de dados.');
