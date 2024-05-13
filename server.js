@@ -1,7 +1,7 @@
 require('dotenv/config.js')
 const app = require('./src/app.js')
 
-const http = require('http');
+const https = require('http');
 const fs = require('fs');
 
  const httpsOptions = {
@@ -9,7 +9,7 @@ const fs = require('fs');
     cert: fs.readFileSync('/etc/letsencrypt/live/taiacupeba.com.br/fullchain.pem')
 };
 
-const server = http.createServer(httpsOptions,app);
+const server = https.createServer(httpsOptions,app);
 
 
 const PORT = 3333;
