@@ -19,7 +19,7 @@ class ServicoController extends Controller {
       const { page = 1, nome_negocio = '' } = req.query;
     
       //limite de registros em cada pagina
-      const limit = 7;
+      const limit = 8;
       var lastPage = 1;
 
       //consultando quantidade de pedidos encontrados por codcli
