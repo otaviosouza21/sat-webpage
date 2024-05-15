@@ -9,6 +9,9 @@ class EmailController {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASSWORD,
       },
+      tls: {
+        rejectUnauthorized: false
+      }
     });
   }
 
@@ -19,6 +22,7 @@ class EmailController {
       to: options.to,
       subject: options.subject,
       text: options.text,
+      html: `<h2>${options.text}</h2>`
     };
 
     this.transporter.sendMail(mailOptions, function (error, info) {
@@ -40,6 +44,7 @@ class EmailController {
       to: to,
       subject: subject,
       text: text,
+      html: text
     };
 
     this.transporter.sendMail(mailOptions, function (error, info) {
