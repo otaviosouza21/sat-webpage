@@ -36,10 +36,7 @@ class PasswordController extends Controller {
         subject: "Recuperação de Senha - SAT EMPREENDEDORES",
         text: `
           <p>Clique no botão abaixo para definir uma nova senha</p>
-          <button class="button">
           <a href=${resetLink}>Recuperar senha</a>
-          </button>
-          </div>
         `,
       };
       await this.emailController.sendEmailOptions(req, res, options);
