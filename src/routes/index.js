@@ -8,6 +8,7 @@ const avaliacao = require('./avaliacao_servicoRoutes.js')
 const email = require('./email.js')
 const password = require('./password.js')
 const formulario = require('./formularioRoutes.js')
+const pergunta = require('./perguntaRoutes.js')
 
 module.exports = (app)=>{
     app.use(cors());
@@ -20,4 +21,5 @@ module.exports = (app)=>{
     app.use(email);
     app.use(password);
     app.use(formulario);
+    app.use(pergunta);
 }
