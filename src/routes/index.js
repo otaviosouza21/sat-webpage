@@ -9,6 +9,8 @@ const email = require('./email.js')
 const password = require('./password.js')
 const formulario = require('./formularioRoutes.js')
 const pergunta = require('./perguntaRoutes.js')
+const resposta = require('./respostaRoutes.js')
+const respostaSubPerguntaRoutes = require('./respostaSubPerguntaRoutes.js')
 
 module.exports = (app)=>{
     app.use(cors());
@@ -22,4 +24,6 @@ module.exports = (app)=>{
     app.use(password);
     app.use(formulario);
     app.use(pergunta);
+    app.use(resposta);
+    app.use(respostaSubPerguntaRoutes);
 }
