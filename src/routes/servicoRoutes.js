@@ -16,6 +16,9 @@ route.get('/api/servico/categoria/:id', (req, res) => {servicoController.InnerJo
 route.get('/api/servico/:id', (req, res) => servicoController.pegaUmRegistroPorIdController(req, res));
 route.put('/api/servico/:id', (req, res) => servicoController.atulizaDadoController(req, res));
 route.delete('/api/servico/:id', (req, res) => servicoController.excluiRegistroController(req, res));
+//news
+
+route.get('/api/categoria/servicos', (req, res)=> {servicoController.pegaServicosAgrupadosPorCategoria(req,res)})
 
 module.exports = route;
 

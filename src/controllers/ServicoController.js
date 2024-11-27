@@ -1,8 +1,8 @@
 const Controller = require('./Controller.js');
 const ServicoServices = require('../services/ServicoServices.js');
+const { shuffleArray } = require('../utils/helpers.js'); // Função para embaralhar arrays (veja abaixo)
 const model = require('../models');
 const { Op } = require('sequelize');
-
 
 const servicoServices = new ServicoServices();
 const camposObrigatorios = ['possui_nome_negocio','tempo_negocio','descricao_servico','categoria_id','usuario_id']
@@ -57,7 +57,6 @@ class ServicoController extends Controller {
       return res.status(500).json({ message: `erro ao buscar registro, mensagem do erro: ${e}` });
     }
   }
-
 
   async InnerJoinPegaTodosServicoUsuario(req,res){
     try {
@@ -150,6 +149,36 @@ class ServicoController extends Controller {
         return res.status(500).json({ message: `erro ao buscar registro, mensagem do erro: ${e}` });
   }
   }
+
+
+  async pegaServicosAgrupadosPorCategoria(req, res) {
+    try {
+      const categorias = await model.Categoria_Servico.findAll({
+        attributes: ['id', 'nome'],
+        include: [
+          {
+            model: model.Servico,
+          },
+        ],
+      });
+  
+      // Transformar os dados para randomizar as categorias e serviços
+      const categoriasAleatorias = shuffleArray(
+        categorias.map((categoria) => {
+          return {
+            ...categoria.dataValues,
+            Servicos: shuffleArray(categoria.Servicos).slice(0, 3), // Embaralhar serviços e limitar a 3
+          };
+        })
+      );
+  
+      return res.status(200).json(categoriasAleatorias);
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: 'Erro ao buscar serviços', error: true });
+    }
+  }
+  
 }
 
 module.exports = ServicoController;
