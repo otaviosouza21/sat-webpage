@@ -9,11 +9,12 @@ class PerguntaController extends Controller {
     super(perguntaServices, camposObrigatorios);
   }
 
-  async cadastrarPergunta(req, res) {
+  async cadastrarPergunta(data, res) {
+  
     try {
-      const isValid = await this.allowNull(req, res);
-      if (isValid.status) {
-        const novaPergunta = await this.propsServices.criaRegistro(req.body);
+      /* const isValid = await this.allowNull(req, res); */
+      if (true) {
+        const novaPergunta = await this.propsServices.criaRegistro(data);
         return res.status(201).json({
           message: 'Pergunta criada com sucesso!',
           data: novaPergunta,

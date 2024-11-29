@@ -1,8 +1,10 @@
 const Controller = require('./Controller');
 const FormularioServices = require('../services/FormularioServices.js');
+const PerguntaController = require('./PerguntaController.js');
 
 const camposObrigatorios = ['titulo', 'descricao', 'tipo', 'usuario_id'];
 const formularioServices = new FormularioServices();
+const perguntaController = new PerguntaController()
 
 class FormularioController extends Controller {
   constructor() {
@@ -10,10 +12,18 @@ class FormularioController extends Controller {
   }
 
   async cadastrarFormulario(req, res) {
+    
     try {
-      const isValid = await this.allowNull(req, res);
+      const isValid = await this.allowNullForm(req.body.form, res);
       if (isValid.status) {
-        const novoFormulario = await this.propsServices.criaRegistro(req.body);
+        const novoFormulario = await this.propsServices.criaRegistro(req.body.form);
+        const perguntas = req.body.question
+        const perguntasComVinculo = perguntas.map((pergunta) => ({
+          ...pergunta,
+          questionarioId: novoFormulario.id,
+        }));
+        perguntaController.cadastrarPergunta(perguntasComVinculo, res)
+
         return res.status(201).json({
           message: 'Formulário criado com sucesso!',
           data: novoFormulario,
@@ -33,6 +43,27 @@ class FormularioController extends Controller {
       });
     }
   }
+
+
+  async allowNullForm(req, res) {
+    this.camposVazios = [] //serve para nao acumular valores duplicados na array
+    const todosCamposTrue = this.camposObrigatorios.every((campo) => {
+
+      if (req[campo] == null) {
+        this.camposVazios.push(campo)
+      }
+      
+      return req[campo];
+    });
+    
+    if (todosCamposTrue){
+      return { status: true };
+    } 
+    else{
+      return { status: false, campos: this.camposVazios };
+    } 
+  }
+
 
   async listarFormularios(req, res) {
     try {
