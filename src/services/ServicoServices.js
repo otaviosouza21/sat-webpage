@@ -10,8 +10,6 @@ class ServicoServices extends Services {
 
   
   async pegaServicosAtivos(ItenStarted,limit,nome_negocio) {
-
-
     const listaServicos = await model.Servico.findAll({
       where:{
         status:true,

@@ -154,11 +154,16 @@ class ServicoController extends Controller {
   async pegaServicosAgrupadosPorCategoria(req, res) {
     try {
       const categorias = await model.Categoria_Servico.findAll({
-        attributes: ['id', 'nome'],
+        attributes: ['id', 'nome','cor_categoria'],
         include: [
           {
             model: model.Servico,
+            include:{
+                model: model.Usuario,
+                attributes:['id','nome','email','contato_pessoal_01','contato_pessoal_02','contato_negocio_01','contato_negocio_02','socio_sat','createdAt','updatedAt','rule_id'],
+            }
           },
+
         ],
       });
   
