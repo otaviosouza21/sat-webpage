@@ -12,6 +12,8 @@ module.exports = (sequelize, DataTypes) => {
     {
       formulario_id: DataTypes.INTEGER,
       titulo: DataTypes.STRING,
+      descricao: DataTypes.STRING,
+      possui_sub_pergunta: DataTypes.BOOLEAN,
       tipo_resposta: DataTypes.STRING
     },
     {

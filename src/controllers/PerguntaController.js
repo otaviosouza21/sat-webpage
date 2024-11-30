@@ -9,12 +9,13 @@ class PerguntaController extends Controller {
     super(perguntaServices, camposObrigatorios);
   }
 
-  async cadastrarPergunta(data, res) {
+
+  async cadastrarPergunta(req, res) {
   
     try {
-      /* const isValid = await this.allowNull(req, res); */
-      if (true) {
-        const novaPergunta = await this.propsServices.criaRegistro(data);
+       const isValid = await this.allowNull(req, res);
+      if (!isValid.status) {
+        const novaPergunta = await this.propsServices.criaVarios(req.body);
         return res.status(201).json({
           message: 'Pergunta criada com sucesso!',
           data: novaPergunta,
@@ -32,6 +33,20 @@ class PerguntaController extends Controller {
         message: `Erro ao cadastrar pergunta: ${error.message}`,
         error: true
       });
+    }
+  }
+
+  async cadastrarVariasPerguntas(data) {
+    try {
+      /* const isValid = await this.allowNull(req, res); */
+      if (true) {
+        const novaPergunta = await this.propsServices.criaVarios(data);
+        return {error: false, data: novaPergunta};
+      } else {
+        return {error: true, message: 'Preencha todos os campos obrigatorios'};
+      }
+    } catch (error) {
+      return {error: false, message: error.message};
     }
   }
 

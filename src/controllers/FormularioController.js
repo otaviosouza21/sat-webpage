@@ -17,16 +17,22 @@ class FormularioController extends Controller {
       const isValid = await this.allowNullForm(req.body.form, res);
       if (isValid.status) {
         const novoFormulario = await this.propsServices.criaRegistro(req.body.form);
+        
+        if(!novoFormulario.id){
+          throw new Error('Erro ao criar perguntas pois nao foi possivel obtar a ID')
+        }
+        
         const perguntas = req.body.question
         const perguntasComVinculo = perguntas.map((pergunta) => ({
           ...pergunta,
-          questionarioId: novoFormulario.id,
+          formulario_id: novoFormulario.id,
         }));
-        perguntaController.cadastrarPergunta(perguntasComVinculo, res)
-
+       const novasPerguntas = await perguntaController.cadastrarVariasPerguntas(perguntasComVinculo, res)
+       
         return res.status(201).json({
           message: 'Formulário criado com sucesso!',
-          data: novoFormulario,
+          form: novoFormulario,
+          questions: novasPerguntas.data,
           error: false
         });
       } else {

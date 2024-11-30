@@ -12,8 +12,8 @@ const app = require('./src/app.js')
 // const server = https.createServer(httpsOptions,app);
 
 
-const PORT = 3333;
+const PORT = 3000;
 
 app.listen(PORT,()=>{
-    console.log('servidor Escutando');
+    console.log('Servidor Escutando na porta: '+ PORT);
 });

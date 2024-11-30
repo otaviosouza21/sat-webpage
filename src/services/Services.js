@@ -9,6 +9,11 @@ class Services{
         return model[this.nomeModel].create(dadosDoRegistro);
     }
 
+    //-------------CREAT GROUP REGISTERS-----//
+    async criaVarios(dadosDoRegistro) {
+        return model[this.nomeModel].bulkCreate(dadosDoRegistro);
+    }
+
     //-----------READ--------------//
     async pegaTodosRegistros(){
         return model[this.nomeModel].findAll();

@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
       titulo: DataTypes.STRING,
       descricao: DataTypes.STRING,
       tipo: DataTypes.STRING,
+      status: DataTypes.BOOLEAN,
       usuario_id: DataTypes.INTEGER,
       vigencia_inicio: DataTypes.DATE,
       vigencia_fim: DataTypes.DATE
