@@ -12,7 +12,7 @@ const app = require('./src/app.js')
 // const server = https.createServer(httpsOptions,app);
 
 
-const PORT = 3000;
+const PORT = 3333;
 
 app.listen(PORT,()=>{
     console.log('Servidor Escutando na porta: '+ PORT);

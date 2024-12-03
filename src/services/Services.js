@@ -19,6 +19,14 @@ class Services{
         return model[this.nomeModel].findAll();
     }
 
+    async pegaTodosRegistrosWhere(column,id){
+        return model[this.nomeModel].findAll({
+            where:{
+                [column]: id
+            }
+        });
+    }
+
     async pegaUmRegistroPorId(id) {
         return model[this.nomeModel].findByPk(id);
     }
@@ -50,6 +58,13 @@ class Services{
     //-----------DELETE--------------//
     async excluiRegistro(id) {
         return model[this.nomeModel].destroy({ where: { id: id } });
+    }
+
+
+    //-----------DELETE BY -------------//
+
+    async excluiRegistroWhere(column,id) {
+        return model[this.nomeModel].destroy({ where: { [column]: id } });
     }
 }
 
