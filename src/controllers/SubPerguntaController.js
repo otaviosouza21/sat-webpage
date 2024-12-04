@@ -10,6 +10,7 @@ class SubPerguntaController extends Controller {
   }
 
   async cadastrarSubPergunta(req, res) {
+    
     try {
       const isValid = await this.allowNull(req, res);
       if (isValid.status) {

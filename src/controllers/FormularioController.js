@@ -1,6 +1,7 @@
 const Controller = require('./Controller');
 const FormularioServices = require('../services/FormularioServices.js');
 const PerguntaController = require('./PerguntaController.js');
+const {sequelize} = require('../models')
 
 const camposObrigatorios = ['titulo', 'descricao', 'tipo', 'usuario_id'];
 const formularioServices = new FormularioServices();
@@ -11,41 +12,61 @@ class FormularioController extends Controller {
     super(formularioServices, camposObrigatorios);
   }
 
+
   async cadastrarFormulario(req, res) {
-    
+   const transaction = await sequelize.transaction(); 
+
+   console.log(req.body);
+   
+  
     try {
+      // Validação inicial
       const isValid = await this.allowNullForm(req.body.form, res);
-      if (isValid.status) {
-        const novoFormulario = await this.propsServices.criaRegistro(req.body.form);
-        
-        if(!novoFormulario.id){
-          throw new Error('Erro ao criar perguntas pois nao foi possivel obtar a ID')
-        }
-        
-        const perguntas = req.body.question
-        const perguntasComVinculo = perguntas.map((pergunta) => ({
-          ...pergunta,
-          formulario_id: novoFormulario.id,
-        }));
-       const novasPerguntas = await perguntaController.cadastrarVariasPerguntas(perguntasComVinculo, res)
-       
-        return res.status(201).json({
-          message: 'Formulário criado com sucesso!',
-          form: novoFormulario,
-          questions: novasPerguntas.data,
-          error: false
-        });
-      } else {
+      if (!isValid.status) {
         return res.status(400).json({
           message: 'Preencha todos os campos obrigatórios',
           campos: isValid.campos,
-          error: true
+          error: true,
         });
       }
+  
+      // Cria o formulário dentro da transação
+      const novoFormulario = await this.propsServices.criaRegistro(req.body.form, { transaction });
+  
+      if (!novoFormulario.id) {
+        throw new Error('Erro ao criar perguntas pois não foi possível obter a ID');
+      }
+  
+      // Prepara perguntas com vínculo
+      const perguntas = req.body.question;
+      const perguntasComVinculo = perguntas.map((pergunta) => ({
+        ...pergunta,
+        formulario_id: novoFormulario.id,
+      }));
+  
+      // Cria perguntas em massa dentro da transação
+      const novasPerguntas = await perguntaController.cadastrarVariasPerguntas(
+        perguntasComVinculo,
+        transaction
+      );
+  
+      // Confirma todas as operações
+      await transaction.commit();
+  
+      // Retorna sucesso
+      return res.status(201).json({
+        message: 'Formulário criado com sucesso!',
+        form: novoFormulario,
+        questions: novasPerguntas.data,
+        error: false,
+      });
     } catch (error) {
+      // Desfaz as operações em caso de erro
+      await transaction.rollback();
+  
       return res.status(500).json({
         message: `Erro ao cadastrar formulário: ${error.message}`,
-        error: true
+        error: true,
       });
     }
   }
