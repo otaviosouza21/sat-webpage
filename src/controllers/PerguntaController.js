@@ -148,30 +148,7 @@ class PerguntaController extends Controller {
     }
   }
 
-  async excluirPerguntaByForm(req, res) {
-    try {
-      const { id } = req.params;
-
-      const excluido = await this.propsServices.excluiRegistroWhere('formulario_id',id);
-
-      if (!excluido) {
-        return res.status(404).json({
-          message: 'Pergunta não encontrada para exclusão',
-          error: true
-        });
-      }
-
-      return res.status(200).json({
-        message: 'Pergunta excluída com sucesso!',
-        error: false
-      });
-    } catch (error) {
-      return res.status(500).json({
-        message: `Erro ao excluir pergunta: ${error.message}`,
-        error: true
-      });
-    }
-  }
+ 
 }
 
 
