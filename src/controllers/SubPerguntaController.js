@@ -35,6 +35,20 @@ class SubPerguntaController extends Controller {
     }
   }
 
+  async cadastrarVariasSubPerguntas(data) {
+    try {
+      /* const isValid = await this.allowNull(req, res); */
+      if (true) {
+        const novaPergunta = await this.propsServices.criaVarios(data);
+        return {error: false, data: novaPergunta};
+      } else {
+        return {error: true, message: 'Preencha todos os campos obrigatorios'};
+      }
+    } catch (error) {
+      return {error: false, message: error.message};
+    }
+  }
+
   async listarSubPerguntas(req, res) {
     try {
       const subPerguntas = await this.propsServices.pegaTodosRegistros();
