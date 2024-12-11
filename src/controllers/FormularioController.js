@@ -52,25 +52,21 @@ class FormularioController extends Controller {
         transaction
       );
 
-
-      novasPerguntas.data.forEach(async (novaPergunta,index)=>{
-
-        if(novaPergunta.possui_sub_pergunta){
-          const subPerguntasComVinculo = question[index].multipleQuestionOptions.map(
-            (subPergunta) => ({
-              ...subPergunta,
-              pergunta_id: novaPergunta.id,
-            })
-          );
+      novasPerguntas.data.forEach(async (novaPergunta, index) => {
+        if (novaPergunta.possui_sub_pergunta) {
+          const subPerguntasComVinculo = question[
+            index
+          ].multipleQuestionOptions.map((subPergunta) => ({
+            ...subPergunta,
+            pergunta_id: novaPergunta.id,
+          }));
 
           await subPerguntaController.cadastrarVariasSubPerguntas(
             subPerguntasComVinculo,
             transaction
           );
-
         }
-      })
-
+      });
 
       // Confirma todas as operações
       await transaction.commit();
@@ -146,7 +142,8 @@ class FormularioController extends Controller {
   async atualizarFormulario(req, res) {
     try {
       const { id } = req.params;
-      const dadosAtualizados = req.body;
+      const { form } = req.body;
+      const dadosAtualizados = form;
 
       const atualizado = await this.propsServices.atualizaDado(
         dadosAtualizados,
