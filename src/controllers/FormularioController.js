@@ -80,7 +80,6 @@ class FormularioController extends Controller {
         message: "Formulário criado com sucesso!",
         form: novoFormulario,
         questions: novasPerguntas.data,
-        /*  subPerguntas: novasSubPerguntas.data, */
         error: false,
       });
     } catch (error) {
