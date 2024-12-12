@@ -44,6 +44,26 @@ class Controller {
     }
   }
 
+  async criaVariosRegistros(req, res) {
+    const dadosParaCriacao = req.body;
+    const isTrue = await this.allowNull(req, res);
+    try {
+      if (isTrue.status) {
+        const novoRegistroCriado = await this.propsServices.criaVarios(dadosParaCriacao);
+        return res.status(200).json(novoRegistroCriado);
+      } else {
+        return res.status(500).json({
+          message: 'Preencha todos os campos necessarios',
+          campos: isTrue.campos,
+          error: true,
+        });
+      }
+    } catch (e) {
+      return res.status(400).json({ message: `erro ao criar, mensagem do erro:${e}` });
+    }
+  }
+
+
   //-------------------------------------READ-------------------------------------//
   async pegaTodosController(req, res) {
     try {

@@ -10,6 +10,7 @@ class SubPerguntaController extends Controller {
   }
 
   async cadastrarSubPergunta(req, res) {
+    
     try {
       const isValid = await this.allowNull(req, res);
       if (isValid.status) {
@@ -31,6 +32,20 @@ class SubPerguntaController extends Controller {
         message: `Erro ao cadastrar subpergunta: ${error.message}`,
         error: true
       });
+    }
+  }
+
+  async cadastrarVariasSubPerguntas(data) {
+    try {
+      /* const isValid = await this.allowNull(req, res); */
+      if (true) {
+        const novaPergunta = await this.propsServices.criaVarios(data);
+        return {error: false, data: novaPergunta};
+      } else {
+        return {error: true, message: 'Preencha todos os campos obrigatorios'};
+      }
+    } catch (error) {
+      return {error: false, message: error.message};
     }
   }
 

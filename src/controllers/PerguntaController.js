@@ -9,11 +9,13 @@ class PerguntaController extends Controller {
     super(perguntaServices, camposObrigatorios);
   }
 
+
   async cadastrarPergunta(req, res) {
+  
     try {
-      const isValid = await this.allowNull(req, res);
-      if (isValid.status) {
-        const novaPergunta = await this.propsServices.criaRegistro(req.body);
+       const isValid = await this.allowNull(req, res);
+      if (!isValid.status) {
+        const novaPergunta = await this.propsServices.criaVarios(req.body);
         return res.status(201).json({
           message: 'Pergunta criada com sucesso!',
           data: novaPergunta,
@@ -34,9 +36,37 @@ class PerguntaController extends Controller {
     }
   }
 
+  async cadastrarVariasPerguntas(data) {
+    try {
+      /* const isValid = await this.allowNull(req, res); */
+      if (true) {
+        const novaPergunta = await this.propsServices.criaVarios(data);
+        return {error: false, data: novaPergunta};
+      } else {
+        return {error: true, message: 'Preencha todos os campos obrigatorios'};
+      }
+    } catch (error) {
+      return {error: false, message: error.message};
+    }
+  }
+
   async listarPerguntas(req, res) {
     try {
       const perguntas = await this.propsServices.pegaTodosRegistros();
+      return res.status(200).json({ data: perguntas, error: false });
+    } catch (error) {
+      return res.status(500).json({
+        message: `Erro ao listar perguntas: ${error.message}`,
+        error: true
+      });
+    }
+  }
+
+  async listarPerguntasWhere(req, res) {
+    const { column, id } = req.params;
+
+    try {
+      const perguntas = await this.propsServices.pegaTodosRegistrosWhere(column,id);
       return res.status(200).json({ data: perguntas, error: false });
     } catch (error) {
       return res.status(500).json({
@@ -117,6 +147,11 @@ class PerguntaController extends Controller {
       });
     }
   }
+
+ 
 }
+
+
+
 
 module.exports = PerguntaController;

@@ -1,8 +1,13 @@
-const Controller = require('./Controller');
-const FormularioServices = require('../services/FormularioServices.js');
+const Controller = require("./Controller");
+const FormularioServices = require("../services/FormularioServices.js");
+const PerguntaController = require("./PerguntaController.js");
+const SubPerguntaController = require("./SubPerguntaController.js");
+const { sequelize } = require("../models");
 
-const camposObrigatorios = ['titulo', 'descricao', 'tipo', 'usuario_id'];
+const camposObrigatorios = ["titulo", "descricao", "tipo", "usuario_id"];
 const formularioServices = new FormularioServices();
+const perguntaController = new PerguntaController();
+const subPerguntaController = new SubPerguntaController();
 
 class FormularioController extends Controller {
   constructor() {
@@ -10,27 +15,98 @@ class FormularioController extends Controller {
   }
 
   async cadastrarFormulario(req, res) {
+    const transaction = await sequelize.transaction();
+    const { form, question } = req.body;
+
     try {
-      const isValid = await this.allowNull(req, res);
-      if (isValid.status) {
-        const novoFormulario = await this.propsServices.criaRegistro(req.body);
-        return res.status(201).json({
-          message: 'Formulário criado com sucesso!',
-          data: novoFormulario,
-          error: false
-        });
-      } else {
+      // Validação inicial
+      const isValid = await this.allowNullForm(form, res);
+      if (!isValid.status) {
         return res.status(400).json({
-          message: 'Preencha todos os campos obrigatórios',
+          message: "Preencha todos os campos obrigatórios",
           campos: isValid.campos,
-          error: true
+          error: true,
         });
       }
+
+      // Cria o formulário dentro da transação
+      const novoFormulario = await this.propsServices.criaRegistro(form, {
+        transaction,
+      });
+
+      if (!novoFormulario.id) {
+        throw new Error(
+          "Erro ao criar perguntas pois não foi possível obter a ID"
+        );
+      }
+
+      // Prepara perguntas com vínculo
+      const perguntasComVinculo = question.map((pergunta) => ({
+        ...pergunta,
+        formulario_id: novoFormulario.id,
+      }));
+
+      // Cria perguntas em massa dentro da transação
+      const novasPerguntas = await perguntaController.cadastrarVariasPerguntas(
+        perguntasComVinculo,
+        transaction
+      );
+
+      //Vai iterar sobre as novas perguntas, e verificar se há tipo MultRespostas
+      novasPerguntas.data.forEach(async (novaPergunta,index)=>{
+
+        if(novaPergunta.possui_sub_pergunta){
+          const subPerguntasComVinculo = question[index].multipleQuestionOptions.map(
+            (subPergunta) => ({
+              ...subPergunta,
+              pergunta_id: novaPergunta.id,
+            })
+          );
+
+          await subPerguntaController.cadastrarVariasSubPerguntas(
+            subPerguntasComVinculo,
+            transaction
+          );
+
+        }
+      })
+
+
+      // Confirma todas as operações
+      await transaction.commit();
+
+      // Retorna sucesso
+      return res.status(201).json({
+        message: "Formulário criado com sucesso!",
+        form: novoFormulario,
+        questions: novasPerguntas.data,
+        error: false,
+      });
     } catch (error) {
+      // Desfaz as operações em caso de erro
+      await transaction.rollback();
+
       return res.status(500).json({
         message: `Erro ao cadastrar formulário: ${error.message}`,
-        error: true
+        error: true,
       });
+    }
+  }
+
+  async allowNullForm(req, res) {
+    this.camposVazios = []; //serve para nao acumular valores duplicados na array
+    const todosCamposTrue = this.camposObrigatorios.every((campo) => {
+      if (req[campo] == null) {
+        this.camposVazios.push(campo);
+      }
+
+      return req[campo];
+    });
+
+    if (todosCamposTrue) {
+      return { status: true };
+    } else {
+      return { status: false, campos: this.camposVazios };
     }
   }
 
@@ -41,7 +117,7 @@ class FormularioController extends Controller {
     } catch (error) {
       return res.status(500).json({
         message: `Erro ao listar formulários: ${error.message}`,
-        error: true
+        error: true,
       });
     }
   }
@@ -53,8 +129,8 @@ class FormularioController extends Controller {
 
       if (!formulario) {
         return res.status(404).json({
-          message: 'Formulário não encontrado',
-          error: true
+          message: "Formulário não encontrado",
+          error: true,
         });
       }
 
@@ -62,7 +138,7 @@ class FormularioController extends Controller {
     } catch (error) {
       return res.status(500).json({
         message: `Erro ao buscar formulário: ${error.message}`,
-        error: true
+        error: true,
       });
     }
   }
@@ -70,25 +146,28 @@ class FormularioController extends Controller {
   async atualizarFormulario(req, res) {
     try {
       const { id } = req.params;
-      const dadosAtualizados = req.body;
+      const { form } = req.body;
 
-      const atualizado = await this.propsServices.atualizaDado(dadosAtualizados, id);
+      const atualizado = await this.propsServices.atualizaDado(
+        form,
+        id
+      );
 
       if (!atualizado) {
         return res.status(404).json({
-          message: 'Formulário não encontrado para atualização',
-          error: true
+          message: "Formulário não encontrado para atualização",
+          error: true,
         });
       }
 
       return res.status(200).json({
-        message: 'Formulário atualizado com sucesso!',
-        error: false
+        message: "Formulário atualizado com sucesso!",
+        error: false,
       });
     } catch (error) {
       return res.status(500).json({
         message: `Erro ao atualizar formulário: ${error.message}`,
-        error: true
+        error: true,
       });
     }
   }
@@ -101,19 +180,19 @@ class FormularioController extends Controller {
 
       if (!excluido) {
         return res.status(404).json({
-          message: 'Formulário não encontrado para exclusão',
-          error: true
+          message: "Formulário não encontrado para exclusão",
+          error: true,
         });
       }
 
       return res.status(200).json({
-        message: 'Formulário excluído com sucesso!',
-        error: false
+        message: "Formulário excluído com sucesso!",
+        error: false,
       });
     } catch (error) {
       return res.status(500).json({
         message: `Erro ao excluir formulário: ${error.message}`,
-        error: true
+        error: true,
       });
     }
   }
