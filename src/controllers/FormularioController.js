@@ -53,24 +53,21 @@ class FormularioController extends Controller {
       );
 
       //Vai iterar sobre as novas perguntas, e verificar se há tipo MultRespostas
-      novasPerguntas.data.forEach(async (novaPergunta,index)=>{
-
-        if(novaPergunta.possui_sub_pergunta){
-          const subPerguntasComVinculo = question[index].multipleQuestionOptions.map(
-            (subPergunta) => ({
-              ...subPergunta,
-              pergunta_id: novaPergunta.id,
-            })
-          );
+      novasPerguntas.data.forEach(async (novaPergunta, index) => {
+        if (novaPergunta.possui_sub_pergunta) {
+          const subPerguntasComVinculo = question[
+            index
+          ].multipleQuestionOptions.map((subPergunta) => ({
+            ...subPergunta,
+            pergunta_id: novaPergunta.id,
+          }));
 
           await subPerguntaController.cadastrarVariasSubPerguntas(
             subPerguntasComVinculo,
             transaction
           );
-
         }
-      })
-
+      });
 
       // Confirma todas as operações
       await transaction.commit();
@@ -122,6 +119,19 @@ class FormularioController extends Controller {
     }
   }
 
+  async listarFormulariosAtivos(req, res) {
+    try {
+      const formularios =
+        await formularioServices.listarFormulariosAtivos_Services();
+      return res.status(200).json({ data: formularios, error: false });
+    } catch (error) {
+      return res.status(500).json({
+        message: `Erro ao listar formulários: ${error.message}`,
+        error: true,
+      });
+    }
+  }
+
   async pegarFormularioPorId(req, res) {
     try {
       const { id } = req.params;
@@ -148,10 +158,7 @@ class FormularioController extends Controller {
       const { id } = req.params;
       const { form } = req.body;
 
-      const atualizado = await this.propsServices.atualizaDado(
-        form,
-        id
-      );
+      const atualizado = await this.propsServices.atualizaDado(form, id);
 
       if (!atualizado) {
         return res.status(404).json({
