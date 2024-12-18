@@ -4,7 +4,7 @@ const PerguntaController = require("./PerguntaController.js");
 const SubPerguntaController = require("./SubPerguntaController.js");
 const { sequelize } = require("../models");
 
-const camposObrigatorios = ["titulo", "descricao", "tipo", "usuario_id"];
+const camposObrigatorios = ["titulo", "descricao", "tipo_id", "usuario_id"];
 const formularioServices = new FormularioServices();
 const perguntaController = new PerguntaController();
 const subPerguntaController = new SubPerguntaController();
@@ -109,7 +109,7 @@ class FormularioController extends Controller {
 
   async listarFormularios(req, res) {
     try {
-      const formularios = await this.propsServices.pegaTodosRegistros();
+      const formularios = await formularioServices.listarFormularios_Services();
       return res.status(200).json({ data: formularios, error: false });
     } catch (error) {
       return res.status(500).json({

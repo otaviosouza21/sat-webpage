@@ -2,7 +2,7 @@ const Services = require('./Services');
 
 class TipoRespostaServices extends Services {
   constructor() {
-    super('TipoResposta'); // Nome do model definido
+    super('Tipo_Resposta'); // Nome do model definido
   }
 }
 
