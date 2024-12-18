@@ -9,6 +9,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: 'pergunta_id'
        });
       Pergunta.hasMany(models.Resposta, { foreignKey: 'pergunta_id' });
+      Pergunta.belongsTo(models.TipoResposta, { 
+        foreignKey: 'tipo_resposta_id', 
+        as: 'tipoResposta' 
+      });
     }
   }
   Pergunta.init(
@@ -17,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
       titulo: DataTypes.STRING,
       descricao: DataTypes.STRING,
       possui_sub_pergunta: DataTypes.BOOLEAN,
-      tipo_resposta: DataTypes.STRING
+      tipo_resposta_id: DataTypes.INTEGER // Nova coluna para relacionamento
     },
     {
       sequelize,

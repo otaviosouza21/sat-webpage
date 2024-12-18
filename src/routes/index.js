@@ -12,6 +12,7 @@ const pergunta = require('./perguntaRoutes.js')
 const resposta = require('./respostaRoutes.js')
 const respostaSubPerguntaRoutes = require('./respostaSubPerguntaRoutes.js')
 const subPergunta = require('./subPerguntaRoutes.js')
+const tipoRespostaRoutes = require('./tiposResposta_Routes.js')
 
 module.exports = (app)=>{
     app.use(cors());
@@ -28,4 +29,5 @@ module.exports = (app)=>{
     app.use(subPergunta);
     app.use(resposta);
     app.use(respostaSubPerguntaRoutes);
+    app.use(tipoRespostaRoutes);
 }
