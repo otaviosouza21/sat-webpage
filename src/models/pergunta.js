@@ -1,17 +1,16 @@
 'use strict';
 const { Model } = require('sequelize');
+
 module.exports = (sequelize, DataTypes) => {
   class Pergunta extends Model {
     static associate(models) {
       Pergunta.belongsTo(models.Formulario, { foreignKey: 'formulario_id' });
-      Pergunta.hasMany(models.SubPergunta, { 
-        onDelete: 'CASCADE',
-        foreignKey: 'pergunta_id'
-       });
-      Pergunta.hasMany(models.Resposta, { foreignKey: 'pergunta_id' });
-      Pergunta.belongsTo(models.TipoResposta, { 
+      Pergunta.belongsTo(models.Tipo_Resposta, { 
         foreignKey: 'tipo_resposta_id', 
         as: 'tipoResposta' 
+      });
+      Pergunta.hasMany(models.SubPergunta, {
+        foreignKey: 'pergunta_id'
       });
     }
   }
