@@ -98,9 +98,11 @@ class FormularioController extends Controller {
   async cadastrarFormulario(req, res) {
     const { perguntas } = req.body;
     const form = req.body;
+ 
+    
     try {
       const isTrue = await this.allowNull(req, res);
-      console.log(isTrue);
+      
       if (!isTrue.status) {
         return res.status(500).json({
           message: "Preencha todos os campos necessários",
@@ -113,7 +115,7 @@ class FormularioController extends Controller {
       const formExist = await model.Formulario.findOne({
         where: { titulo: form.titulo },
       });
-      if (formExist !== null) {
+      if (formExist !== null) {  
         return res.status(500).json({
           message: "Já existe formulario com o nome informado!",
           error: true,
@@ -221,6 +223,21 @@ class FormularioController extends Controller {
       });
     }
   }
+
+  async listarFormulariosAtivosWhere(req, res) {
+    const {column, id} = req.params
+    try {
+      const formulario =
+        await formularioServices.listarFormulariosAtivos_ServicesWhere(column,id);
+      return res.status(200).json({ data: formulario, error: false });
+    } catch (error) {
+      return res.status(500).json({
+        message: `Erro ao listar formulários: ${error.message}`,
+        error: true,
+      });
+    }
+  }
+
 
   async pegarFormularioPorId(req, res) {
     try {

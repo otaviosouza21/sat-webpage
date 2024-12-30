@@ -18,6 +18,9 @@ route.get("/api/formularios/ativos", (req, res) =>
 route.get("/api/formularios/:id", (req, res) =>
   formularioController.pegarFormularioPorId(req, res)
 );
+route.get("/api/formularios/:column/:id", (req, res) =>
+  formularioController.listarFormulariosAtivosWhere(req, res)
+);
 route.put("/api/formularios/:id", (req, res) =>
   formularioController.atualizarFormulario(req, res)
 );
