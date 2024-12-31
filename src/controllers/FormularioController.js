@@ -242,7 +242,7 @@ class FormularioController extends Controller {
   async pegarFormularioPorId(req, res) {
     try {
       const { id } = req.params;
-      const formulario = await this.propsServices.pegaUmRegistroPorId(id);
+      const formulario = await this.propsServices.listarFormulariosAtivos_ServicesPorId(id);
 
       if (!formulario) {
         return res.status(404).json({

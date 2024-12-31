@@ -111,6 +111,40 @@ class FormularioServices extends Services {
       return { retorno: formulariosAtivos, error: false };
     }
   }
+  async listarFormulariosAtivos_ServicesPorId(id) {
+    const formulariosAtivos = await model.Formulario.findAll({
+      where: { id: id },
+      include: [
+        {
+          model: model.Tipos_formulario,
+          attributes: ["id", "nome", "status"], // Campos relevantes de Tipos_formulario
+        },
+        {
+          model: model.Pergunta,
+          attributes: [
+            "titulo",
+            "descricao",
+            "possui_sub_pergunta",
+            "tipo_resposta_id",
+          ],
+          include: [
+            {
+              model: model.SubPergunta,
+              attributes: ["titulo"], // Inclui os campos relevantes da SubPergunta
+            },
+          ],
+        },
+      ],
+    });
+
+    if (!formulariosAtivos || formulariosAtivos.length === 0) {
+      console.log("Nenhum registro encontrado na base de dados.");
+      return { error: true, retorno: formulariosAtivos };
+    } else {
+      console.log("Registros encontrados na base de dados.");
+      return { retorno: formulariosAtivos, error: false };
+    }
+  }
 
   async cadastrarFormulario(form, perguntas) {
     const transaction = await model.sequelize.transaction(); // Inicia a transação
